@@ -211,5 +211,5 @@ char[][] arrayArray = new char [3][];
 
 arrayArray[sub array][sub array index] = 'value';
 ```
-`[3]` is how many arrays is inside the array
+`[3]` is how many arrays is inside the array, or the grid size
 
