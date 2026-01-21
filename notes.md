@@ -213,3 +213,18 @@ arrayArray[sub array][sub array index] = 'value';
 ```
 `[3]` is how many arrays is inside the array, or the grid size
 
+
+### BISHOP
+- up & right: row+1, col+1
+- up & left: row+1, col-1
+- down & right: row-1, col+1
+- down & left: row-1, col-1
+
+  | Direction  | Row change | Col change | Boundary check |
+  |------------|------------|------------|----------------|
+  | Up-right   | +1         | +1         | > 8 or > 8     |
+  | Up-left    | +1         | -1         | > 8 or < 1     |
+  | Down-right | -1         | +1         | < 1 or > 8     |
+  | Down-left  | -1         | -1         | < 1 or < 1     |
+
+
