@@ -223,9 +223,21 @@ arrayArray[sub array][sub array index] = 'value';
   | Direction  | Row change | Col change | Boundary check   |
   |------------|------------|------------|------------------|
   | Up-right   | +1         | +1         | > 8 or > 8  done | 
-  | Up-left    | +1         | -1         | > 8 or < 1       |
-  | Down-right | -1         | +1         | < 1 or > 8       |
-  | Down-left  | -1         | -1         | < 1 or < 1       |
+  | Up-left    | +1         | -1         | > 8 or < 1  done |
+  | Down-right | -1         | +1         | < 1 or > 8  done |
+  | Down-left  | -1         | -1         | < 1 or < 1  done |
+
+### ROOK
+
+
+| Direction | Row change | Col change | Boundary check |
+|-----------|------------|------------|----------------|
+| Forward   | +1         | 0          | row > 8        | 
+| Backwards | -1         | 0          | row < 1        |
+| Right     | 0          | +1         | col > 8        |
+| Left      | 0          | -1         | col < 1        |
+
+
 
 
 ## MAIN TESTS
@@ -253,4 +265,4 @@ arrayArray[sub array][sub array index] = 'value';
 
 [] QueenMoveTests
 
-[] RookMoveTests
+[x] RookMoveTests
