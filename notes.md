@@ -238,7 +238,18 @@ arrayArray[sub array][sub array index] = 'value';
 | Left      | 0          | -1         | col < 1        |
 
 
+### QUEEN
 
+Combine Bishop and Rook moving logic
+
+
+### KING
+
+Same move logic as Queen but has to stop after only one square
+
+### KNIGHT
+
+### PAWN
 
 ## MAIN TESTS
 
@@ -263,6 +274,6 @@ arrayArray[sub array][sub array index] = 'value';
 
 [] PawnMoveTests
 
-[] QueenMoveTests
+[x] QueenMoveTests
 
 [x] RookMoveTests
