@@ -268,7 +268,7 @@ Same move logic as Queen but has to stop after only one square
 
 [x] BishopMoveTests
 
-[] KingMoveTests
+[x] KingMoveTests
 
 [] KnightMoveTests
 

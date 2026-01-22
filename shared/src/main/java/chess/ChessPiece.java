@@ -89,6 +89,11 @@ public class ChessPiece {
             return calculator.pieceMoves(board, myPosition);
         }
 
+        if (piece.getPieceType() == PieceType.KING) {
+            KingMovesCalculator calculator = new KingMovesCalculator();
+            return calculator.pieceMoves(board, myPosition);
+        }
+
         return List.of();
     }
 }
