@@ -99,6 +99,11 @@ public class ChessPiece {
             return calculator.pieceMoves(board, myPosition);
         }
 
+        if (piece.getPieceType() == PieceType.PAWN) {
+            PawnMovesCalculator calculator = new PawnMovesCalculator();
+            return calculator.pieceMoves(board, myPosition);
+        }
+
         return List.of();
     }
 }

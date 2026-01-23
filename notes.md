@@ -427,7 +427,7 @@ Same move logic as Queen but has to stop after only one square
 
 [x] KnightMoveTests
 
-[] PawnMoveTests
+[x] PawnMoveTests
 
 [x] QueenMoveTests
 
