@@ -32,7 +32,7 @@ java ClassName
 
 No .class at the end
 
-*Javadoc*
+**Javadoc**
 - Documentation for Java class library 
     - Download: Java 25 Api
 - `/**` is a multiline comment, that tells Javadoc to read all the lines
@@ -45,12 +45,12 @@ No .class at the end
 
 There are 8 types
 
-*int*
+**int**
 - regular non decimal integers
 - has a max number that can be stored in int type with Java
 - default number size for integers
 
-*long*
+**long**
 - use to store super large numbers
 
 Assigns an integar to a long
@@ -203,7 +203,7 @@ for(int value : intArray) {
 
 Can't access indexes, this only gets the values. Use a normal for loop if indexes are needed. 
 
-*Arrays of arrays*
+**Arrays of arrays**
 
 ```java
 
@@ -211,7 +211,146 @@ char[][] arrayArray = new char [3][];
 
 arrayArray[sub array][sub array index] = 'value';
 ```
+
 `[3]` is how many arrays is inside the array, or the grid size
+
+## Java Records
+
+**Data Objects** 
+
+Created to carry data between parts of a program. These hold pieces of data and that is the primary function. 
+These are passed as parameters into Services and Domain Models. 
+
+**What problem do java records solve?**
+
+Data object class declarations can still end up being super long code. Most of this code is called `boilerplate` which
+is repetitive and easy to get wrong. Records make it so you don't have to make a massive class, and are a compact way
+to declare immutable data objects
+
+Create new java file but select record instead of class. 
+
+WHen using a record, the parameers in the delcaration are called `record components`. These would be the data that
+you are trying to put into the record to carry over. 
+
+Records contain getters, constructors
+
+Can add methods in the body of records. 
+
+**What do you get for free for records?** Generated for you by Java compiler automatically when you create a record
+
+- Immutable fields
+- constructor: initializes record components passed in to the declaration
+- getters: the component names so they can be accessed and returned
+- equals(): compares the values of components, RECORDS USE VALUE-BASED EQUALITY
+- hashCode(): uses all fields/components values when it is generated
+- toString(): uses all fields/component values
+
+**Can records have methods other than constructor, getters, equals ect...?**
+
+Yes, but should be data helpers/manipulation rather than behavior. Classes are better for behavioral methods. 
+- derived values
+- formatting what is returned in a different way
+- updating what is returned
+
+**When are records a good fit?**
+- when class is mostly data
+- when you want immutability, read only
+- when equality should be based on the values of the fields
+
+**When are records not a good fit?**
+- if object has a lot of mutable states
+- Complex cycle or behavior heavy logic
+- Has a unique identity that shouldn't be based on all its fields
+
+
+## Exceptions & Exception Handling
+
+**What are exceptions?**
+- abnormal conditions that can occur in a Java class
+- Allows you to separate normal processing logic from abnormal logic
+- Represented by classes and objects in Java
+
+**How to use try/catch blocks**
+
+Syntax
+
+```java
+try {
+    // code that may throw an exceotion
+} catch(someExceptionType ex) {
+    // code to handle the exception
+} catch(otherExceptionType ex) {
+    // code to handle exception
+}
+```
+
+Multi-catch, separate the exception types in the catch declaration with `||`
+
+Can catch specific exception types or catch all exceptions. First catch block can be a very specific one likely to 
+occur and the following can be more general. 
+
+
+**Checked vs unchecked**
+
+Checked exceptions: 
+- non runtim exceptions 
+- use the Handle or Declare rule 
+
+**Handle an exception**
+- Try catch block
+
+**Throw an exception**
+- Anything throwed needs to be inherited from the class or object
+- Throw the exception frmo the class
+
+**Finally blocks**
+- always executes
+
+**Custom exception classes**
+
+
+
+
+
+
+
+## Java Classes
+
+Constructor, variables (static or private), getters - gets the value of a variable and returns it 
+
+`Constructor`
+
+`equals()` 
+
+`hashCode()` 
+
+`toString()`
+
+`private` -
+
+`final` - variable cannot be changed
+
+`@Override`
+
+Getters - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Programming Exam
+
+Take practice exam on canvas - it is an exact copy of what needs to be uploaded
+
+Can have Javadoc, chess phase-0 specification, and the Game of Chess Github page open
 
 
 ### BISHOP
@@ -249,6 +388,22 @@ Same move logic as Queen but has to stop after only one square
 
 ### KNIGHT
 
++2 -1 done
+
++2 +1 done
+
++1 -2 done
+
++1 +2 done
+
+-1 -2 done
+
+-1 +2 done
+
+-2 +1 done
+
+-2 -1 
+
 ### PAWN
 
 ## MAIN TESTS
@@ -270,7 +425,7 @@ Same move logic as Queen but has to stop after only one square
 
 [x] KingMoveTests
 
-[] KnightMoveTests
+[x] KnightMoveTests
 
 [] PawnMoveTests
 
