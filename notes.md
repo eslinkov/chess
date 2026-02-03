@@ -432,3 +432,105 @@ Same move logic as Queen but has to stop after only one square
 [x] QueenMoveTests
 
 [x] RookMoveTests
+
+
+# COLLECTIONS
+
+`import java.util`
+
+**List Interface**
+
+ArrayList - resizable array implementation
+- you can keep adding things to this, it will reallocate space on its own
+- `import java.util.ArrayList`
+
+
+LinkedList - doubly linked list implementation
+
+ListIterator
+- powerful iterator that lists support
+
+**Set Interface**
+
+Collection that contains no du0plicate3
+
+Methods: `add(value)`, `contains(value)`, `remove(value)`
+
+Classes: HashSet, TreeSet, LinkedHashSet
+
+**Queue Interface**
+
+Use to hold elements you plan to process
+
+Methods: add(value), peek(), remove()
+
+Classes: ArrayDeque, LinkedList, PriorityQueue
+
+**Deque**
+
+Supports efficient insertino and removal at both ends of the queue
+
+Methods: addFirst(value), peekFirst(), removeFirst(), addLast(value), peekLast(), removeLast()
+
+Classes: ArrayDeque, LinkedList
+
+**Stack Class**
+
+Java's Stack class is deprecated
+
+If you need a class, use a Deque
+
+**Equality Checking**
+
+Equality checks based on identity - don;t need to do anything, this is what the default Object.equals method does
+
+Equality checks based on value - override the equals method on objects placed ihn collections
+
+**Hashing-Based Collections**
+
+Takes an object, converts it to key, determined where it is stored in the collection. Makes it faster to access.
+
+Override the hashCode method if you want a hash function to be based on value instead of identity. It default returns
+the object's address. 
+
+If you override equals you also have to overring hashCode
+
+**Sorted Collections**
+
+
+**Copying stuff**
+
+Mutable - deep copy
+- 
+
+Immutable - shallow copy
+- Strings
+- Int, bool, double
+
+Use Cloneable interface in the class
+
+
+
+**File Class**
+
+What you can do with a file object:
+- can check if a file exists
+- can create a file
+- delete a file
+
+**Streams**
+
+`InputStream` and `OutputStream` - reading / writing bytes and binary-formatted data
+
+`Reader` and `Writer` - Reading/writing characters and text-formatted data
+
+**Input Stream**
+
+Is an interface that has methods to read bytes from a data source
+
+`Filter Input Streams` attach to other streams
+
+**Output Stream**
+
+Interface that attaches bytes to an output destination
+
