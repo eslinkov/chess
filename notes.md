@@ -534,3 +534,13 @@ Is an interface that has methods to read bytes from a data source
 
 Interface that attaches bytes to an output destination
 
+**Single Responsibility Principle**
+
+Each class and method should have one single responsibility
+
+Each class should represent one, well-defined concept
+
+Each method should perform one, well-defined task
+
+Methods that need to do multiple tasks should delegate tasks to sub-methods
+that each perform a single task
