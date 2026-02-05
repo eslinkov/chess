@@ -74,7 +74,47 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
+        ChessPosition kingPosition = null;
+
+        // loop through all the squares on the chess board and test what piece is at each
+        // square and check if it is the king that is the teamColor
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition currentSquare = new ChessPosition(row, col);
+                ChessPiece pieceAtSquare = board.getPiece(currentSquare);
+
+                if (pieceAtSquare != null && pieceAtSquare.getTeamColor() == teamColor && pieceAtSquare.getPieceType() == ChessPiece.PieceType.KING) {
+                    // get postion king is at
+                    kingPosition = currentSquare;
+                }
+
+            }
+        }
+
+        // calculate any opposing team potential move choices that would land on king position
+        // itereate through the moves and compare to the king position
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition currentSquare = new ChessPosition(row, col);
+                ChessPiece pieceAtSquare = board.getPiece(currentSquare);
+
+                if (pieceAtSquare != null && pieceAtSquare.getTeamColor() != teamColor) {
+                    Collection<ChessMove> potentialMoves = pieceAtSquare.pieceMoves(board, currentSquare);
+
+                    for (ChessMove move : potentialMoves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        return false;
     }
 
     /**
@@ -104,7 +144,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -113,7 +153,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 
     @Override
