@@ -119,12 +119,12 @@ public class ChessGame {
             } else {
                 board.addPiece(move.getEndPosition(), piece);
                 board.addPiece(move.getStartPosition(), null);
+            }
 
-                if (currentTurn == TeamColor.BLACK) {
-                    currentTurn = TeamColor.WHITE;
-                } else {
-                    currentTurn = TeamColor.BLACK;
-                }
+            if (currentTurn == TeamColor.BLACK) {
+                currentTurn = TeamColor.WHITE;
+            } else {
+                currentTurn = TeamColor.BLACK;
             }
 
         } else {
