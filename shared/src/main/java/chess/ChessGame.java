@@ -192,22 +192,7 @@ public class ChessGame {
         if (!isInCheck(teamColor)) {
             return false;
         }
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition currentSquare = new ChessPosition(row, col);
-                ChessPiece pieceAtSquare = board.getPiece(currentSquare);
-
-                if (pieceAtSquare != null && pieceAtSquare.getTeamColor() == teamColor) {
-                    Collection<ChessMove> validMoves = validMoves(currentSquare);
-                    if (!validMoves.isEmpty()) {
-                        return false;
-                    }
-                }
-
-            }
-        }
-
-        return true;
+        return hasNoValidMoves(teamColor);
     }
 
     /**
@@ -222,6 +207,10 @@ public class ChessGame {
             return false;
         }
 
+        return hasNoValidMoves(teamColor);
+    }
+
+    private boolean hasNoValidMoves(TeamColor teamColor) {
         for (int row = 1; row <= 8; row++) {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition currentSquare = new ChessPosition(row, col);
