@@ -544,3 +544,83 @@ Each method should perform one, well-defined task
 
 Methods that need to do multiple tasks should delegate tasks to sub-methods
 that each perform a single task
+
+
+**Chess Phase 2**
+
+Read specs for phase 2 and 3
+
+Structure of the sequence diagram
+
+Chess Server & Chess Client communicates with each other
+
+Chess Client 
+
+Chess Server
+
+1. Server
+
+2. Handlers
+
+3. Services
+
+4. Data Access
+- temporary data storage
+
+Database
+
+Diagram:
+
+Read phase 2 & 3 specs
+
+Endpoint - URLs with code attached to it, all of them need to be implemented
+
+Models Classes - create as records
+- User
+- Authtoken
+- Game
+- Each model class needs a DaO
+
+DataAccess Classes
+- Somewhere to put code that stores data
+- Memory Data Access Objects (DaO) classes for now before creating the database (SQL) and accessing data from there
+ 
+Services Classes
+- Gameplay logic
+- Login endpoint
+- Register endpoint
+- JoinGame endpoint
+- You can have one service class for each end point OR group some together like login and register
+
+
+# Web API
+
+**Javalin**
+
+Main method goes in side ChessServer class, create the Javalin server inside main method
+
+`import io.javalin.Javalin;`
+
+create, map URL, and start server
+
+Route for each endpoint
+
+Javalin server with handler classes
+
+call json method instead of result
+
+Handler interface is included in the Javalin import, all of the handlers need to implement it
+
+Lambda code to call the handlers
+
+**Endpoint Handlers** 
+- get, post, put, delete
+- have to specify one of these in order to call the handlers
+
+**Before and After Handlers**
+- helps to avoid duplicate code
+- executes these before any of the handlers execute
+- Throw the response exception to prevent the rest of the handlers from being executed
+
+**Code structyre recommendations**
+- inheritance for all handlers that have to deal with authentications
