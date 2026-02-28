@@ -1,14 +1,14 @@
 package dataaccess;
 
 import model.GameData;
-import model.GameListOld;
+import model.GameList;
 
 public interface GameDAO {
     GameData createGame(GameData game) throws DataAccessException;
 
     GameData getGame(int gameID) throws DataAccessException;
 
-    GameListOld listGames() throws DataAccessException;
+    GameList listGames() throws DataAccessException;
 
     GameData updateGame(GameData game) throws DataAccessException;
 

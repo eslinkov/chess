@@ -1,7 +1,7 @@
 package dataaccess;
 
 import model.GameData;
-import model.GameListOld;
+import model.GameList;
 
 import java.util.HashMap;
 
@@ -20,8 +20,8 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public GameListOld listGames() throws DataAccessException {
-        return new GameListOld(gameDataHashMap.values());
+    public GameList listGames() throws DataAccessException {
+        return new GameList(gameDataHashMap.values());
     }
 
     @Override
