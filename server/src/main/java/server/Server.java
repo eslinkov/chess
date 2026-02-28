@@ -18,6 +18,21 @@ public class Server {
         return javalin.port();
     }
 
+
+
+
+//    private static <T> T getBodyObject(Context context, Class<T> clazz) {
+//        var bodyObject = new Gson().fromJson(context.body(), clazz);
+//
+//        if (bodyObject == null) {
+//            throw new RuntimeException("missing required body");
+//        }
+//
+//        return bodyObject;
+//    }
+
+
+
     public void stop() {
         javalin.stop();
     }
