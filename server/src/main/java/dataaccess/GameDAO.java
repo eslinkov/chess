@@ -4,7 +4,7 @@ import model.GameData;
 import model.GameList;
 
 public interface GameDAO {
-    GameData createGame(GameData game) throws DataAccessException;
+    GameData createGame(GameData gameData) throws DataAccessException;
 
     GameData getGame(int gameID) throws DataAccessException;
 
