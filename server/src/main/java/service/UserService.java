@@ -1,12 +1,9 @@
 package service;
 
 import dataaccess.AuthDAO;
-
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import model.*;
-import model.RegisterResult;
-
 import java.util.UUID;
 
 public class UserService {
@@ -49,11 +46,13 @@ public class UserService {
             throw new DataAccessException("Error: bad request");
         }
 
-        if (userDAO.getUser(loginRequest.username()) == null) {
+        UserData userData = userDAO.getUser(loginRequest.username());
+
+        if (userData == null) {
             throw new DataAccessException("Error: unauthorized");
         }
 
-        if (!loginRequest.password().equals(userDAO.getUser(loginRequest.username()).password())) {
+        if (!loginRequest.password().equals(userData.password())) {
             throw new DataAccessException("Error: unauthorized");
         }
 

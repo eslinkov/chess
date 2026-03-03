@@ -5,11 +5,9 @@ import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.*;
-import org.jetbrains.annotations.NotNull;
 import service.*;
-
 import java.util.Map;
-import java.util.Objects;
+
 
 public class Server {
 
@@ -23,7 +21,7 @@ public class Server {
     private final UserService userService;
     private final GameService gameService;
 
-
+    private final Gson serializer = new Gson();
 
     public Server() {
         userDAO = new MemoryUserDAO();
@@ -47,13 +45,12 @@ public class Server {
         javalin.exception(DataAccessException.class, this::exceptionHandler);
     }
 
-    public void exceptionHandler(DataAccessException e, Context context) {
+    private void exceptionHandler(DataAccessException e, Context context) {
         int statusCode;
         String body;
 
         if (e.getMessage().contains("bad request")) {
             statusCode = 400;
-
         } else if (e.getMessage().contains("unauthorized")) {
             statusCode = 401;
         } else if (e.getMessage().contains("already taken")) {
@@ -63,11 +60,11 @@ public class Server {
         }
 
         context.status(statusCode);
-        context.result(new Gson().toJson(Map.of("message", e.getMessage())));
+
+        context.result(serializer.toJson(Map.of("message", e.getMessage())));
     }
 
-    public void handleJoinGame(Context context) throws DataAccessException {
-        var serializer = new Gson();
+    private void handleJoinGame(Context context) throws DataAccessException {
         JoinRequest joinRequest = serializer.fromJson(context.body(), JoinRequest.class);
 
         gameService.joinGame(joinRequest, context.header("authorization"));
@@ -77,25 +74,25 @@ public class Server {
         context.result("{}");
     }
 
-    public void handleCreateGame(Context context) throws DataAccessException {
-        var serializer = new Gson();
+    private void handleCreateGame(Context context) throws DataAccessException {
         CreateGameRequest createRequest = serializer.fromJson(context.body(), CreateGameRequest.class);
 
         CreateGameResult createResult = gameService.createGame(createRequest, context.header("authorization"));
 
         context.status(200);
+
         context.result(serializer.toJson(createResult));
     }
 
-    public void handleListGames(Context context) throws DataAccessException {
-        var serializer = new Gson();
-        GameList listGames = gameService.listGames(context.header("authorization"));
+    private void handleListGames(Context context) throws DataAccessException {
+        GameList gameList = gameService.listGames(context.header("authorization"));
 
         context.status(200);
-        context.result(serializer.toJson(listGames));
+
+        context.result(serializer.toJson(gameList));
     }
 
-    public void handleLogout(Context context) throws DataAccessException {
+    private void handleLogout(Context context) throws DataAccessException {
         userService.logout(context.header("authorization"));
 
         context.status(200);
@@ -103,52 +100,40 @@ public class Server {
         context.result("{}");
     }
 
-    public void handleLogin(Context context) throws DataAccessException {
-        var serializer = new Gson();
+    private void handleLogin(Context context) throws DataAccessException {
         LoginRequest loginRequest = serializer.fromJson(context.body(), LoginRequest.class);
+
         LoginResult loginResult = userService.login(loginRequest);
 
         context.status(200);
+
         context.result(serializer.toJson(loginResult));
     }
 
-    public void handleRegister(Context context) throws DataAccessException {
-        var serializer = new Gson();
+    private void handleRegister(Context context) throws DataAccessException {
         RegisterRequest newRegisterRequest = serializer.fromJson(context.body(), RegisterRequest.class);
+
         RegisterResult registerResult = userService.register(newRegisterRequest);
 
         context.status(200);
+
         context.result(serializer.toJson(registerResult));
 
     }
 
-    public void handleClear(Context context) throws DataAccessException {
+    private void handleClear(Context context) throws DataAccessException {
         clearService.clear();
+
         context.status(200);
+
         context.result("{}");
     }
 
     public int run(int desiredPort) {
         javalin.start(desiredPort);
+
         return javalin.port();
     }
-
-
-
-
-
-
-//    private static <T> T getBodyObject(Context context, Class<T> clazz) {
-//        var bodyObject = new Gson().fromJson(context.body(), clazz);
-//
-//        if (bodyObject == null) {
-//            throw new RuntimeException("missing required body");
-//        }
-//
-//        return bodyObject;
-//    }
-
-
 
     public void stop() {
         javalin.stop();
