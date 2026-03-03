@@ -8,6 +8,9 @@ import model.*;
 import org.jetbrains.annotations.NotNull;
 import service.*;
 
+import java.util.Map;
+import java.util.Objects;
+
 public class Server {
 
     private final Javalin javalin;
@@ -41,6 +44,26 @@ public class Server {
         javalin.get("/game", this::handleListGames);
         javalin.post("/game", this::handleCreateGame);
         javalin.put("/game", this::handleJoinGame);
+        javalin.exception(DataAccessException.class, this::exceptionHandler);
+    }
+
+    public void exceptionHandler(DataAccessException e, Context context) {
+        int statusCode;
+        String body;
+
+        if (e.getMessage().contains("bad request")) {
+            statusCode = 400;
+
+        } else if (e.getMessage().contains("unauthorized")) {
+            statusCode = 401;
+        } else if (e.getMessage().contains("already taken")) {
+            statusCode = 403;
+        } else {
+            statusCode = 500;
+        }
+
+        context.status(statusCode);
+        context.result(new Gson().toJson(Map.of("message", e.getMessage())));
     }
 
     public void handleJoinGame(Context context) throws DataAccessException {
