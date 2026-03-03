@@ -22,11 +22,14 @@ class ClearServiceTest {
     private AuthData testAuth;
 
 
+
+
     @BeforeEach
     void setUp() throws DataAccessException {
         userDAO = new MemoryUserDAO();
         authDAO = new MemoryAuthDAO();
         gameDAO = new MemoryGameDAO();
+
         clearService = new ClearService(authDAO, gameDAO, userDAO);
 
         testUser = new UserData("testUsername", "testPassword", "testEmail");
