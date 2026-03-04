@@ -624,3 +624,33 @@ Lambda code to call the handlers
 
 **Code structyre recommendations**
 - inheritance for all handlers that have to deal with authentications
+
+
+# Phase 4- DB
+
+Each SQL data access object needs to implement its corresponding DAO interface
+
+Line of code in Server files that can swap between using SQL and in memory storage
+
+## DatabaseManager class
+- how to connect server to database, run commands on the database, create database
+
+THings needed to connect to DB:
+- host name of computer running db server 
+- port number db is listening on
+- mysql username
+- mysql password
+- name of DB
+
+## Initializing database
+
+Petshop dataaccess MySqlDataAccess.java file with example code on how to create tables - implement in SqlDAOs
+
+Replace contents to match my setup on db.properties external configuration file
+
+
+Serialize ChessGame object to a JSON string using the Gson library - do this in the SQL DAO classes and insert into tables
+
+readData method to deserilixe JSONs into objects
+
+Type adapter not needed
