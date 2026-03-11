@@ -24,8 +24,16 @@ public class Server {
     private final Gson serializer = new Gson();
 
     public Server() {
-        userDAO = new MemoryUserDAO();
-        authDAO = new MemoryAuthDAO();
+        try {
+            userDAO = new SQLUserDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            authDAO = new SQLAuthDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         gameDAO = new MemoryGameDAO();
 
         clearService = new ClearService(authDAO, gameDAO, userDAO);
