@@ -4,6 +4,7 @@ import model.UserData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import dataaccess.DatabaseManager.*;
@@ -39,12 +40,41 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        var statement = "SELECT * FROM users WHERE username=?";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(statement)) {
+                stmt.setString(1, username);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        return new UserData(rs.getString("username"),
+                                rs.getString("password"), rs.getString("email"));
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("unable to get user", e);
+        }
+
+
+
+
     }
 
     @Override
     public void deleteUser(String username) throws DataAccessException {
+        var statement = "DELETE FROM users WHERE username=?";
 
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(statement)) {
+                stmt.setString(1, username);
+                stmt.executeUpdate();
+            }
+        }  catch (SQLException e) {
+            throw new DataAccessException("unable to delete user", e);
+        }
     }
 
     @Override

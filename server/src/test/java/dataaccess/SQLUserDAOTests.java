@@ -29,6 +29,10 @@ public class SQLUserDAOTests {
 
             userDAO.clear();
         });
+
+        userDAO.createUser(testUser);
+        userDAO.clear();
+        Assertions.assertNull(userDAO.getUser(testUser.username()));
     }
 
     @Test
@@ -54,8 +58,37 @@ public class SQLUserDAOTests {
         Assertions.assertThrows(DataAccessException.class, () -> {
             userDAO.createUser(testUser);
         });
+    }
 
+    @Test
+    void testGetUser() throws DataAccessException {
+        userDAO.createUser(testUser);
 
+        UserData foundUser = userDAO.getUser(testUser.username());
+
+        Assertions.assertEquals("testUsername", foundUser.username());
+        Assertions.assertEquals("testPassword", foundUser.password());
+        Assertions.assertEquals("testEmail", foundUser.email());
+    }
+
+    @Test
+    void testGetUserDoesNotExist() throws DataAccessException {
+        Assertions.assertNull(userDAO.getUser(testUser.username()));
+    }
+
+    @Test
+    void testDeleteUser() throws DataAccessException {
+        userDAO.createUser(testUser);
+
+        userDAO.deleteUser(testUser.username());
+
+        Assertions.assertNull(userDAO.getUser(testUser.username()));
+    }
+
+    @Test
+    void testDeleteUserDoesntExist() throws DataAccessException {
+        userDAO.deleteUser("asdf");
+        Assertions.assertNull(userDAO.getUser("asdf"));
     }
 
 }
