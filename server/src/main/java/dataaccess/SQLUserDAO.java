@@ -34,7 +34,7 @@ public class SQLUserDAO implements UserDAO{
         }
 
 
-        return null;
+        return user;
     }
 
     @Override
@@ -49,6 +49,16 @@ public class SQLUserDAO implements UserDAO{
 
     @Override
     public void clear() throws DataAccessException {
+        var statement = "TRUNCATE users";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(statement)) {
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("unable to delete database", e);
+        }
+
 
     }
 
