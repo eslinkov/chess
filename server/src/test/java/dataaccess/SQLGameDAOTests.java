@@ -15,12 +15,37 @@ public class SQLGameDAOTests {
     @BeforeEach
     void setup() throws DataAccessException {
         gameDAO = new SQLGameDAO();
+        gameDAO.clear();
 
     }
 
     @Test
     public void testTableCreation() throws DataAccessException {
         new SQLGameDAO();
+    }
+
+    @Test
+    void testClear() throws DataAccessException {
+        GameData testGame = new GameData(0, null, null, "testGame",
+                new ChessGame());
+
+        for (int i = 0; i < 5; i++) {
+            gameDAO.createGame(testGame);
+        }
+
+        Assertions.assertDoesNotThrow(() -> {
+            gameDAO.clear();
+        });
+
+        for (int i = 0; i < 5; i++) {
+            gameDAO.createGame(testGame);
+        }
+
+        gameDAO.clear();
+
+        for (int i = 1; i < 6; i++) {
+            Assertions.assertNull(gameDAO.getGame(i));
+        }
     }
 
     @Test

@@ -83,8 +83,6 @@ public class SQLUserDAO implements UserDAO{
         } catch (SQLException e) {
             throw new DataAccessException("unable to delete database", e);
         }
-
-
     }
 
     private final String[] createStatements = {
