@@ -15,7 +15,6 @@ public class SQLUserDAO implements UserDAO{
         configureDatabase();
     }
 
-
     @Override
     public UserData createUser(UserData user) throws DataAccessException {
         var statement = "INSERT INTO users (username, password, email) VALUES(?, ?, ?)";
@@ -57,10 +56,6 @@ public class SQLUserDAO implements UserDAO{
         } catch (SQLException e) {
             throw new DataAccessException("unable to get user", e);
         }
-
-
-
-
     }
 
     @Override
