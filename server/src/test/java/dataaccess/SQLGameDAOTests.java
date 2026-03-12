@@ -3,6 +3,7 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
+import model.GameList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,7 +142,17 @@ public class SQLGameDAOTests {
             gameDAO.createGame(testGame);
         }
 
-        gameDAO.listGames();
+        GameList listResult = gameDAO.listGames();
+
+        Assertions.assertEquals(5, listResult.games().size());
+    }
+
+    @Test
+    void testListGamesEmpty() throws DataAccessException {
+        GameList listResult = gameDAO.listGames();
+
+        Assertions.assertTrue(listResult.games().isEmpty());
+
     }
 
 }

@@ -29,12 +29,18 @@ public class Server {
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
+
         try {
             authDAO = new SQLAuthDAO();
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-        gameDAO = new MemoryGameDAO();
+
+        try {
+            gameDAO = new SQLGameDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         clearService = new ClearService(authDAO, gameDAO, userDAO);
         userService = new UserService(authDAO, userDAO);
