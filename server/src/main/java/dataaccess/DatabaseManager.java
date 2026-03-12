@@ -21,7 +21,7 @@ public class DatabaseManager {
      */
     static public void createDatabase() throws DataAccessException {
         var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
-        try (var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", dbUsername, dbPassword);
+        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
@@ -44,7 +44,7 @@ public class DatabaseManager {
     static Connection getConnection() throws DataAccessException {
         try {
             //do not wrap the following line with a try-with-resources
-            var conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", dbUsername, dbPassword);
+            var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
             conn.setCatalog(databaseName);
             return conn;
         } catch (SQLException ex) {
