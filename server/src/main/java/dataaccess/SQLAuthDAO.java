@@ -14,7 +14,7 @@ import static dataaccess.DatabaseManager.getConnection;
 public class SQLAuthDAO implements AuthDAO{
 
     public SQLAuthDAO() throws DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
@@ -46,7 +46,6 @@ public class SQLAuthDAO implements AuthDAO{
         }  catch (SQLException e) {
             throw new DataAccessException("unable to delete auth data", e);
         }
-
     }
 
     @Override
@@ -68,7 +67,6 @@ public class SQLAuthDAO implements AuthDAO{
         } catch (SQLException e) {
             throw new DataAccessException("unable to get auth data", e);
         }
-
     }
 
     @Override
@@ -94,27 +92,4 @@ public class SQLAuthDAO implements AuthDAO{
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException("unable to configure database", ex);
-        }
-    }
-
-
-
-
-
-
-
-    // createStatements method to hold all the sql statements that create the table, array of create table statements
-
-    // configureDatabase method to create tables, uses createStatements
 }

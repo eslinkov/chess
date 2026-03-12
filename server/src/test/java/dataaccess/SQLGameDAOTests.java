@@ -58,14 +58,6 @@ public class SQLGameDAOTests {
 
         Assertions.assertNotNull(createdGame);
         Assertions.assertEquals(testGameData.gameName(), createdGame.gameName());
-
-        System.out.println(createdGame.gameID());
-        System.out.println(createdGame.whiteUsername());
-        System.out.println(createdGame.blackUsername());
-        System.out.println(createdGame.gameName());
-
-        String gameJson = new Gson().toJson(createdGame.game());
-        System.out.println(gameJson);
     }
 
     @Test
@@ -87,11 +79,6 @@ public class SQLGameDAOTests {
 
         GameData foundGame = gameDAO.getGame(createdGame.gameID());
 
-        System.out.println(foundGame.gameID());
-        System.out.println(foundGame.whiteUsername());
-        System.out.println(foundGame.blackUsername());
-        System.out.println(foundGame.gameName());
-        System.out.println(foundGame.game());
 
         Assertions.assertInstanceOf(ChessGame.class, foundGame.game());
 
@@ -114,17 +101,11 @@ public class SQLGameDAOTests {
 
         testGameData = gameDAO.createGame(testGameData);
 
-        System.out.println(testGameData.whiteUsername());
-        System.out.println(testGameData.blackUsername());
-
         testGameData = gameDAO.updateGame(new GameData(testGameData.gameID(), "player1", "player2",
                 "testGame", new ChessGame()));
 
         Assertions.assertEquals("player1", testGameData.whiteUsername());
         Assertions.assertEquals("player2", testGameData.blackUsername());
-
-        System.out.println(testGameData.whiteUsername());
-        System.out.println(testGameData.blackUsername());
     }
 
     @Test

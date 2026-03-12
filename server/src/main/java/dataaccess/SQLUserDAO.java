@@ -12,7 +12,7 @@ import dataaccess.DatabaseManager.*;
 public class SQLUserDAO implements UserDAO{
 
     public SQLUserDAO() throws DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
@@ -26,14 +26,10 @@ public class SQLUserDAO implements UserDAO{
                 stmt.setString(3, user.email());
 
                 stmt.executeUpdate();
-
-
             }
         } catch (SQLException e) {
             throw new DataAccessException("unable to insert database", e);
         }
-
-
         return user;
     }
 
@@ -96,20 +92,4 @@ public class SQLUserDAO implements UserDAO{
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException("unable to configure database", ex);
-        }
-    }
-
-
-
 }

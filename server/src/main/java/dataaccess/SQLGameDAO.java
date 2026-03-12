@@ -16,7 +16,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 public class SQLGameDAO implements GameDAO {
 
     public SQLGameDAO() throws DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
@@ -80,7 +80,6 @@ public class SQLGameDAO implements GameDAO {
 
                         games.add(new GameData(rs.getInt("game_id"), rs.getString("white_username"), rs.getString("black_username"),
                                 rs.getString("game_name"), game));
-                        System.out.println(games);
                         System.out.println(games.size());
                     }
                 }
@@ -139,17 +138,4 @@ public class SQLGameDAO implements GameDAO {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException("unable to configure database", ex);
-        }
-    }
 }

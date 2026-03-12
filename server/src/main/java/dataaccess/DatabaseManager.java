@@ -52,6 +52,19 @@ public class DatabaseManager {
         }
     }
 
+    public static void configureDatabase(String[] createStatements) throws DataAccessException {
+        createDatabase();
+        try (Connection conn = getConnection()) {
+            for (String statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("unable to configure database", ex);
+        }
+    }
+
     private static void loadPropertiesFromResources() {
         try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
             if (propStream == null) {
