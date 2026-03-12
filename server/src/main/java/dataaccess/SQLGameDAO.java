@@ -86,7 +86,7 @@ public class SQLGameDAO implements GameDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("unable to list games", e);
+            throw new DataAccessException("Error: unable to list games", e);
         }
         return new GameList(games);
     }

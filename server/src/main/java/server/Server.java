@@ -65,17 +65,21 @@ public class Server {
 
         if (e.getMessage().contains("bad request")) {
             statusCode = 400;
+            body = e.getMessage();
         } else if (e.getMessage().contains("unauthorized")) {
             statusCode = 401;
+            body = e.getMessage();
         } else if (e.getMessage().contains("already taken")) {
             statusCode = 403;
+            body = e.getMessage();
         } else {
             statusCode = 500;
+            body = "Error: " + e.getMessage();
         }
 
         context.status(statusCode);
 
-        context.result(serializer.toJson(Map.of("message", e.getMessage())));
+        context.result(serializer.toJson(Map.of("message", body)));
     }
 
     private void handleJoinGame(Context context) throws DataAccessException {
