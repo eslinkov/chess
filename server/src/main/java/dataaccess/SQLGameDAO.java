@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -68,12 +69,49 @@ public class SQLGameDAO implements GameDAO {
 
     @Override
     public GameList listGames() throws DataAccessException {
-        return null;
+        var statement = "SELECT * FROM games";
+        ArrayList<GameData> games = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(statement)) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+
+                        games.add(new GameData(rs.getInt("game_id"), rs.getString("white_username"), rs.getString("black_username"),
+                                rs.getString("game_name"), game));
+                        System.out.println(games);
+                        System.out.println(games.size());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("unable to list games", e);
+        }
+        return new GameList(games);
     }
 
     @Override
     public GameData updateGame(GameData game) throws DataAccessException {
-        return null;
+        var statement = "UPDATE games SET white_username=?, black_username=?, game=? WHERE game_id=?";
+
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(statement)) {
+                stmt.setString(1, game.whiteUsername());
+                stmt.setString(2, game.blackUsername());
+
+                String gameJson = new Gson().toJson(game.game());
+                stmt.setString(3, gameJson);
+
+                stmt.setInt(4, game.gameID());
+
+                stmt.executeUpdate();
+
+                return getGame(game.gameID());
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("unable to update game", e);
+        }
     }
 
     @Override

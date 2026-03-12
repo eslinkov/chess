@@ -106,4 +106,42 @@ public class SQLGameDAOTests {
         Assertions.assertNull(gameDAO.getGame(45));
     }
 
+    @Test
+    void testUpdateGameUsernames() throws DataAccessException {
+        GameData testGameData = new GameData(0, null, null, "testGame",
+                new ChessGame());
+
+        testGameData = gameDAO.createGame(testGameData);
+
+        System.out.println(testGameData.whiteUsername());
+        System.out.println(testGameData.blackUsername());
+
+        testGameData = gameDAO.updateGame(new GameData(testGameData.gameID(), "player1", "player2",
+                "testGame", new ChessGame()));
+
+        Assertions.assertEquals("player1", testGameData.whiteUsername());
+        Assertions.assertEquals("player2", testGameData.blackUsername());
+
+        System.out.println(testGameData.whiteUsername());
+        System.out.println(testGameData.blackUsername());
+    }
+
+    @Test
+    void testUpdateGameDoesNotExist() throws DataAccessException {
+        Assertions.assertNull(gameDAO.updateGame(new GameData(1234, "player1", "player2",
+                "testGame", new ChessGame())));
+    }
+
+    @Test
+    void testListGames() throws DataAccessException {
+        GameData testGame = new GameData(0, null, null, "testGame",
+                new ChessGame());
+
+        for (int i = 0; i < 5; i++) {
+            gameDAO.createGame(testGame);
+        }
+
+        gameDAO.listGames();
+    }
+
 }
