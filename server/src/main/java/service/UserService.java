@@ -56,10 +56,6 @@ public class UserService {
             throw new DataAccessException("Error: unauthorized");
         }
 
-//        if (!loginRequest.password().equals(userData.password())) {
-//            throw new DataAccessException("Error: unauthorized");
-//        }
-
         if (!BCrypt.checkpw(loginRequest.password(), userData.password())) {
             throw new DataAccessException("Error: unauthorized");
         }

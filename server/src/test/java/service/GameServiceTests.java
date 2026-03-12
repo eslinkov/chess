@@ -19,10 +19,6 @@ class GameServiceTests {
 
     private UserData testUser;
 
-//    private String testAuthToken;
-
-
-
     @BeforeEach
     void setUp() {
         authDAO = new MemoryAuthDAO();
@@ -34,20 +30,6 @@ class GameServiceTests {
 
         testUser = new UserData("testUsername", "testPassword", "testEmail");
     }
-
-//    @BeforeEach
-//    void registerUser() throws DataAccessException {
-//        RegisterRequest testRegisterRequest = new RegisterRequest(testUser.username(), testUser.password(), testUser.email());
-//
-//
-//
-//        RegisterResult testRegisterResult = userService.register(testRegisterRequest);
-//
-//        testAuthToken = testRegisterResult.authToken();
-//
-//    }
-
-
 
     @Test
     void createGame() throws DataAccessException {

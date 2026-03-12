@@ -34,9 +34,9 @@ public class SQLGameDAO implements GameDAO {
 
                 ResultSet rs = stmt.getGeneratedKeys();
                 rs.next();
-                int game_id = rs.getInt(1);
+                int gameId = rs.getInt(1);
 
-                return new GameData(game_id, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),
+                return new GameData(gameId, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(),
                         gameData.game());
             }
         } catch (SQLException e) {
