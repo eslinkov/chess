@@ -21,7 +21,7 @@ public class ServerFacade {
 
     public RegisterResult register(String username, String password, String email) throws ResponseException {
         RegisterRequest registerRequest = new RegisterRequest(username, password, email);
-        var request = buildRequest("POST", "/user", registerRequest);
+        var request = buildRequest("POST", "/user", registerRequest, null);
         var response = sendRequest(request);
         return handleResponse(response, RegisterResult.class);
 
@@ -29,24 +29,33 @@ public class ServerFacade {
 
     public LoginResult login(String username, String password) throws ResponseException {
         LoginRequest loginRequest = new LoginRequest(username, password);
-        var request = buildRequest("POST", "/session", loginRequest);
+        var request = buildRequest("POST", "/session", loginRequest, null);
         var response = sendRequest(request);
         return handleResponse(response, LoginResult.class);
+    }
+
+    public void logout(String authToken) throws ResponseException {
+        var request = buildRequest("DELETE", "/session", null, authToken);
+        var response = sendRequest(request);
+        handleResponse(response, null);
     }
 
 
 
     public void clear() throws ResponseException {
-        var request = buildRequest("DELETE", "/db", null);
+        var request = buildRequest("DELETE", "/db", null, null);
         sendRequest(request);
     }
 
-    private HttpRequest buildRequest(String method, String path, Object body) {
+    private HttpRequest buildRequest(String method, String path, Object body, String header) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
                 .method(method, makeRequestBody(body));
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
+        }
+        if (header != null) {
+            request.setHeader("Authorization", header);
         }
         return request.build();
     }
