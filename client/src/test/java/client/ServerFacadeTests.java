@@ -1,6 +1,7 @@
 package client;
 
 import dataaccess.DataAccessException;
+import model.LoginResult;
 import model.RegisterResult;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -40,6 +41,7 @@ public class ServerFacadeTests {
     @Test
     public void testRegister() throws ResponseException {
         RegisterResult authData = facade.register("player1", "password", "test@gmail.com");
+
         Assertions.assertNotNull(authData.authToken());
         Assertions.assertNotNull(authData.username());
         Assertions.assertEquals("player1", authData.username());
@@ -51,6 +53,32 @@ public class ServerFacadeTests {
 
         Assertions.assertThrows(ResponseException.class, () -> {
             facade.register("player1", "password2", "p2@gmail.com");
+        });
+    }
+
+    @Test
+    public void testLoginSuccess() throws ResponseException {
+        facade.register("player1", "password", "test@gmail.com");
+
+        LoginResult authData = facade.login("player1", "password");
+
+        Assertions.assertNotNull(authData.authToken());
+        Assertions.assertNotNull(authData.username());
+    }
+
+    @Test
+    public void testLoginUserDoesNotExist() {
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.login("player1", "password");
+        });
+    }
+
+    @Test
+    public void testLoginIncorrectPassword() throws ResponseException {
+        facade.register("player1", "password", "test@gmail.com");
+
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.login("player1", "PaSsWoRd");
         });
     }
 }

@@ -1,6 +1,8 @@
 package client;
 
 import com.google.gson.Gson;
+import model.LoginRequest;
+import model.LoginResult;
 import model.RegisterRequest;
 import model.RegisterResult;
 
@@ -23,6 +25,13 @@ public class ServerFacade {
         var response = sendRequest(request);
         return handleResponse(response, RegisterResult.class);
 
+    }
+
+    public LoginResult login(String username, String password) throws ResponseException {
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        var request = buildRequest("POST", "/session", loginRequest);
+        var response = sendRequest(request);
+        return handleResponse(response, LoginResult.class);
     }
 
 
