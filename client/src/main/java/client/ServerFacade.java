@@ -1,10 +1,7 @@
 package client;
 
 import com.google.gson.Gson;
-import model.LoginRequest;
-import model.LoginResult;
-import model.RegisterRequest;
-import model.RegisterResult;
+import model.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -38,6 +35,13 @@ public class ServerFacade {
         var request = buildRequest("DELETE", "/session", null, authToken);
         var response = sendRequest(request);
         handleResponse(response, null);
+    }
+
+    public CreateGameResult createGame(String gameName, String authToken) throws ResponseException {
+        CreateGameRequest createGameRequest = new CreateGameRequest(gameName);
+        var request = buildRequest("POST", "/game", createGameRequest, authToken);
+        var response = sendRequest(request);
+        return handleResponse(response, CreateGameResult.class);
     }
 
 

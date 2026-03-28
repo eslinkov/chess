@@ -1,6 +1,7 @@
 package client;
 
 import dataaccess.DataAccessException;
+import model.CreateGameResult;
 import model.LoginResult;
 import model.RegisterResult;
 import org.junit.jupiter.api.*;
@@ -90,8 +91,6 @@ public class ServerFacadeTests {
         Assertions.assertDoesNotThrow(() -> {
             facade.logout(authData.authToken());
         });
-
-
     }
 
     @Test
@@ -102,4 +101,23 @@ public class ServerFacadeTests {
             facade.logout(authData);
         });
     }
+
+    @Test
+    public void testCreateGameSuccess() throws ResponseException {
+        facade.register("player1", "password", "test@gmail.com");
+        LoginResult authData = facade.login("player1", "password");
+
+        CreateGameResult newGameID = facade.createGame("New Game", authData.authToken());
+
+        Assertions.assertNotNull(newGameID);
+        Assertions.assertTrue(newGameID.gameID() > 0);
+    }
+
+    @Test
+    public void testCreateGameInvalidAuth() {
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.createGame("New Game", "asdf");
+        });
+    }
+
 }
