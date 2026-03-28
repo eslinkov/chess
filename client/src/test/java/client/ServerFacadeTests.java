@@ -1,9 +1,9 @@
 package client;
 
 import dataaccess.DataAccessException;
-import model.CreateGameResult;
-import model.LoginResult;
-import model.RegisterResult;
+import dataaccess.GameDAO;
+import dataaccess.SQLGameDAO;
+import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 
@@ -31,13 +31,6 @@ public class ServerFacadeTests {
     static void stopServer() {
         server.stop();
     }
-
-
-    @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
-    }
-        // replace with my tests
 
     @Test
     public void testRegister() throws ResponseException {
@@ -117,6 +110,71 @@ public class ServerFacadeTests {
     public void testCreateGameInvalidAuth() {
         Assertions.assertThrows(ResponseException.class, () -> {
             facade.createGame("New Game", "asdf");
+        });
+    }
+
+    @Test
+    public void testListGames() throws ResponseException {
+        facade.register("player1", "password", "test@gmail.com");
+        LoginResult authData = facade.login("player1", "password");
+
+        facade.createGame("New Game 1", authData.authToken());
+        facade.createGame("New Game 2", authData.authToken());
+        facade.createGame("New Game 3", authData.authToken());
+
+        GameList gameList = facade.listGames(authData.authToken());
+
+        Assertions.assertNotNull(gameList.games());
+        Assertions.assertEquals(3, gameList.games().size());
+    }
+
+    @Test
+    void testListGamesInvalidAuthToken() {
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.listGames("asdf");
+        });
+    }
+
+    @Test
+    void testJoinGameSuccessWhite() throws ResponseException, DataAccessException {
+        facade.register("player1", "password", "test@gmail.com");
+        LoginResult authData = facade.login("player1", "password");
+
+        CreateGameResult newGameID = facade.createGame("New Game", authData.authToken());
+        facade.joinGame("WHITE", newGameID.gameID(), authData.authToken());
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData game = gameDAO.getGame(newGameID.gameID());
+
+        Assertions.assertEquals("player1", game.whiteUsername());
+    }
+
+    @Test
+    void testJoinGameSuccessBlack() throws ResponseException, DataAccessException {
+        facade.register("player1", "password", "test@gmail.com");
+        LoginResult authData = facade.login("player1", "password");
+
+        CreateGameResult newGameID = facade.createGame("New Game", authData.authToken());
+        facade.joinGame("BLACK", newGameID.gameID(), authData.authToken());
+        GameDAO gameDAO = new SQLGameDAO();
+        GameData game = gameDAO.getGame(newGameID.gameID());
+
+        Assertions.assertEquals("player1", game.blackUsername());
+    }
+
+    @Test
+    void testJoinGameColorTaken() throws ResponseException {
+        facade.register("player1", "password", "test@gmail.com");
+        facade.register("player2", "password2", "test2@gmail.com");
+
+        LoginResult authData1 = facade.login("player1", "password");
+        LoginResult authData2 = facade.login("player2", "password2");
+
+        CreateGameResult newGameID = facade.createGame("New Game", authData1.authToken());
+
+        facade.joinGame("WHITE", newGameID.gameID(), authData1.authToken());
+
+        Assertions.assertThrows(ResponseException.class, () -> {
+            facade.joinGame("WHITE", newGameID.gameID(), authData2.authToken());
         });
     }
 
