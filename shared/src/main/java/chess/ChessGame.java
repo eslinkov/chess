@@ -132,12 +132,16 @@ public class ChessGame {
         }
     }
 
-    /**
-     * Determines if the given team is in check
-     *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
-     */
+    private boolean canAttackPosition(ChessPiece piece, ChessBoard board, ChessPosition from, ChessPosition target) {
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, from);
+        for (ChessMove move : potentialMoves) {
+            if (move.getEndPosition().equals(target)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isInCheck(TeamColor teamColor) {
 
         ChessPosition kingPosition = null;
@@ -166,19 +170,13 @@ public class ChessGame {
                 ChessPiece pieceAtSquare = board.getPiece(currentSquare);
 
                 if (pieceAtSquare != null && pieceAtSquare.getTeamColor() != teamColor) {
-                    Collection<ChessMove> potentialMoves = pieceAtSquare.pieceMoves(board, currentSquare);
-
-                    for (ChessMove move : potentialMoves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
+                    if (canAttackPosition(pieceAtSquare, board, currentSquare, kingPosition)) {
+                        return true;
                     }
+
                 }
             }
         }
-
-
-
         return false;
     }
 

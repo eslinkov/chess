@@ -15,40 +15,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator{
 
     @Override
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
-        List<ChessMove> moves = new ArrayList<>();
-
-        int currentRow = myPosition.getRow();
-        int currentColumn = myPosition.getColumn();
-
-        for (int[] move : BISHOP_MOVES) {
-            int newRow = currentRow;
-            int newColumn = currentColumn;
-
-            while(true) {
-                newRow += move[0];
-                newColumn += move[1];
-
-                if (!MoveHelper.isOnBoard(newRow, newColumn)) {
-                    break;
-                }
-
-                ChessPosition newPosition = new ChessPosition(newRow, newColumn);
-                ChessPiece pieceAtPosition = board.getPiece(newPosition);
-
-                if (pieceAtPosition == null) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-
-                else if (pieceAtPosition.getTeamColor() != pieceColor) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                    break;
-                }
-                else {
-                    break;
-                }
-            }
-        }
-
-        return moves;
+        return MoveHelper.calculateMoves(board, myPosition, pieceColor, BISHOP_MOVES);
     }
 }

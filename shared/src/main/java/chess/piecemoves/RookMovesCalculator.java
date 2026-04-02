@@ -14,45 +14,8 @@ public class RookMovesCalculator implements PieceMovesCalculator{
             {-1, 0}
     };
 
-
-
     @Override
     public Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor) {
-        List<ChessMove> moves = new ArrayList<>();
-
-        int currentRow = myPosition.getRow();
-        int currentCol = myPosition.getColumn();
-
-        for (int[] move : ROOK_MOVES) {
-            int newRow = currentRow;
-            int newCol = currentCol;
-
-            while (true) {
-                newRow += move[0];
-                newCol += move[1];
-
-                if (!MoveHelper.isOnBoard(newRow, newCol)) {
-                    break;
-                }
-
-                ChessPosition newPosition = new ChessPosition(newRow, newCol);
-                ChessPiece pieceAtPosition = board.getPiece(newPosition);
-
-                if (pieceAtPosition ==  null) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-                else if (pieceAtPosition.getTeamColor() != pieceColor) {
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                    break;
-                }
-                else {
-                    break;
-                }
-
-
-            }
-        }
-
-        return moves;
+        return MoveHelper.calculateMoves(board, myPosition, pieceColor, ROOK_MOVES);
     }
 }

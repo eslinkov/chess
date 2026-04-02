@@ -10,7 +10,7 @@ import java.net.http.HttpResponse;
 
 public class ServerFacade {
     private String serverUrl;
-    private static final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
@@ -87,7 +87,7 @@ public class ServerFacade {
 
     private HttpResponse<String> sendRequest(HttpRequest request) throws ResponseException {
         try {
-            return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            return HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception ex) {
             throw new ResponseException(ResponseException.Code.ServerError, ex.getMessage());
         }

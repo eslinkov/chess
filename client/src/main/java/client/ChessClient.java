@@ -33,25 +33,25 @@ public class ChessClient {
             if (line.isEmpty()) {
                 continue;
             }
-            String[] user_inputs = line.split("\\s+");
-            String command = user_inputs[0].toLowerCase();
+            String[] userInputs = line.split("\\s+");
+            String command = userInputs[0].toLowerCase();
 
             if (authToken == null) {
                 switch (command) {
                     case "help" -> System.out.println("Prelogin commands: register, login, quit, help");
                     case "quit" -> result = "quit";
-                    case "login" -> login(user_inputs);
-                    case "register" -> register(user_inputs);
+                    case "login" -> login(userInputs);
+                    case "register" -> register(userInputs);
                     default -> System.out.println("Unknown command. Type 'help for options.'");
                 }
             } else {
                 switch (command) {
                     case "help" -> System.out.println("Postlogin commands: create, list, join, observe, logout, quit, help");
                     case "quit" -> result = "quit";
-                    case "create" -> create(user_inputs);
+                    case "create" -> create(userInputs);
                     case "list" -> list();
-                    case "join" -> play(user_inputs);
-                    case "observe" -> observe(user_inputs);
+                    case "join" -> play(userInputs);
+                    case "observe" -> observe(userInputs);
                     case "logout" -> logout();
                     default -> System.out.println("Unknown command. Type 'help for options.'");
                 }
@@ -61,13 +61,13 @@ public class ChessClient {
         }
     }
 
-    private void register(String[] user_inputs) {
+    private void register(String[] userInputs) {
         try {
-            if (user_inputs.length != 4) {
+            if (userInputs.length != 4) {
                 System.out.println("Expected: register <username> <password> <email>");
                 return;
             }
-            var result = server.register(user_inputs[1], user_inputs[2], user_inputs[3]);
+            var result = server.register(userInputs[1], userInputs[2], userInputs[3]);
             authToken = result.authToken();
             System.out.println("Welcome " + result.username() + "!");
         } catch (ResponseException e) {
@@ -76,13 +76,13 @@ public class ChessClient {
 
     }
 
-    private void login(String[] user_inputs) {
+    private void login(String[] userInputs) {
         try {
-            if (user_inputs.length != 3) {
+            if (userInputs.length != 3) {
                 System.out.println("Expected: login <username> <password>");
                 return;
             }
-            var result = server.login(user_inputs[1], user_inputs[2]);
+            var result = server.login(userInputs[1], userInputs[2]);
             authToken = result.authToken();
             System.out.println("Welcome back " + result.username() + "!");
         } catch (ResponseException e) {
@@ -101,13 +101,13 @@ public class ChessClient {
 
     }
 
-    private void create(String[] user_inputs) {
+    private void create(String[] userInputs) {
         try {
-            if (user_inputs.length < 2) {
+            if (userInputs.length < 2) {
                 System.out.println("Expected: create <NAME>");
                 return;
             }
-            String gameName = String.join(" ", Arrays.copyOfRange(user_inputs, 1, user_inputs.length));
+            String gameName = String.join(" ", Arrays.copyOfRange(userInputs, 1, userInputs.length));
             var result = server.createGame(gameName, authToken);
             System.out.println("Created game: " + gameName);
         } catch (ResponseException e) {
@@ -145,25 +145,25 @@ public class ChessClient {
         }
     }
 
-    private void play(String[] user_inputs) {
+    private void play(String[] userInputs) {
         try {
-            if (user_inputs.length != 3) {
+            if (userInputs.length != 3) {
                 System.out.println("Expected: join <ID> [WHITE|BLACK]");
                 return;
             }
-            if (!user_inputs[2].toUpperCase().equals("WHITE") && !user_inputs[2].toUpperCase().equals("BLACK")) {
+            if (!userInputs[2].toUpperCase().equals("WHITE") && !userInputs[2].toUpperCase().equals("BLACK")) {
                 System.out.println("Game color must be WHITE or BLACK");
                 return;
             }
             updateList();
-            int listNumber = Integer.parseInt(user_inputs[1]);
+            int listNumber = Integer.parseInt(userInputs[1]);
             int gameID = gameMap.get(listNumber);
-            server.joinGame(user_inputs[2].toUpperCase(), gameID, authToken);
-            System.out.println("Joined game as " + user_inputs[2]);
+            server.joinGame(userInputs[2].toUpperCase(), gameID, authToken);
+            System.out.println("Joined game as " + userInputs[2]);
 
             ChessBoard board = new ChessBoard();
             board.resetBoard();
-            BoardDrawer.drawBoard(board, !user_inputs[2].equalsIgnoreCase("BLACK"));
+            BoardDrawer.drawBoard(board, !userInputs[2].equalsIgnoreCase("BLACK"));
         } catch (ResponseException e) {
             System.out.println(e.getMessage());
         } catch (NumberFormatException | NullPointerException e) {
@@ -171,16 +171,16 @@ public class ChessClient {
         }
     }
 
-    private void observe(String[] user_inputs) {
+    private void observe(String[] userInputs) {
         try {
-            if (user_inputs.length != 2) {
+            if (userInputs.length != 2) {
                 System.out.println("Expected: observe <ID>");
                 return;
             }
             updateList();
-            int listNumber = Integer.parseInt(user_inputs[1]);
+            int listNumber = Integer.parseInt(userInputs[1]);
             int gameID = gameMap.get(listNumber);
-            System.out.println("Observing game: " + user_inputs[1]);
+            System.out.println("Observing game: " + userInputs[1]);
 
             ChessBoard board = new ChessBoard();
             board.resetBoard();
