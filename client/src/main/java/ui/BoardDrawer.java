@@ -12,16 +12,27 @@ import static ui.EscapeSequences.BLACK_ROOK;
 public class BoardDrawer {
 
     public static void drawBoard(ChessBoard board, boolean whitePerspective) {
-        String[] columns = {"a", "b", "c", "d", "e", "f", "g", "h"};
+
+        String[] columns;
+        if (whitePerspective) {
+            columns = new String[]{"a", "b", "c", "d", "e", "f", "g", "h"};
+        } else {
+            columns = new String[]{"h", "g", "f", "e", "d", "c", "b", "a"};
+        }
+
         System.out.print(SET_BG_COLOR_DARK_GREY + EMPTY);
         for (String col : columns) {
             System.out.print(SET_BG_COLOR_DARK_GREY + col + "\u2003 ");
         }
         System.out.println("\u2003" + RESET_BG_COLOR);
 
-        for (int row = 8; row >= 1; row--) {
+        for (int i = 0; i < 8; i++) {
+            int row = whitePerspective ? 8 - i : 1 + i;
+
             System.out.print(SET_BG_COLOR_DARK_GREY + " " + row + " ");
-            for (int col = 1; col <= 8; col++) {
+
+            for (int j = 0; j < 8; j++) {
+                int col = whitePerspective ? 1 + j : 8 - j;
                 if ((row + col) % 2 == 0) {
                     System.out.print(SET_BG_COLOR_PINK);
                 } else {

@@ -160,6 +160,10 @@ public class ChessClient {
             int gameID = gameMap.get(listNumber);
             server.joinGame(user_inputs[2].toUpperCase(), gameID, authToken);
             System.out.println("Joined game as " + user_inputs[2]);
+
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            BoardDrawer.drawBoard(board, !user_inputs[2].equalsIgnoreCase("BLACK"));
         } catch (ResponseException e) {
             System.out.println(e.getMessage());
         } catch (NumberFormatException | NullPointerException e) {
@@ -187,8 +191,4 @@ public class ChessClient {
             System.out.println(e.getMessage());
         }
     }
-
-
-// register testuser1 password test@email.com
-
 }
