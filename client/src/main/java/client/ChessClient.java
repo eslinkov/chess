@@ -1,14 +1,19 @@
 package client;
 
 
+import model.GameList;
 import model.LoginResult;
-import org.junit.jupiter.api.Assertions;
 
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ChessClient {
     private final ServerFacade server;
     private String authToken;
+    private final Map<Integer, Integer> gameMap = new HashMap<>();
 
 
     public ChessClient(String serverUrl) {
@@ -47,8 +52,8 @@ public class ChessClient {
                     case "help" -> System.out.println("Postlogin commands: create, list, join, observe, logout, quit, help");
                     case "quit" -> result = "quit";
                     case "create" -> create(user_inputs);
-//                    case "list"
-//                    case "join"
+                    case "list" -> list();
+                    case "join" -> play(user_inputs);
 //                    case "observe"
                     case "logout" -> logout();
                     default -> System.out.println("Unknown command. Type 'help for options.'");
@@ -105,14 +110,56 @@ public class ChessClient {
 
     private void create(String[] user_inputs) {
         try {
-            if (user_inputs.length != 2) {
+            if (user_inputs.length < 2) {
                 System.out.println("Expected: create <NAME>");
                 return;
             }
-            var result = server.createGame(user_inputs[1], authToken);
-            System.out.println("Created game: " + user_inputs[1] + " gameID: " + result.gameID());
+            String gameName = String.join(" ", Arrays.copyOfRange(user_inputs, 1, user_inputs.length));
+            var result = server.createGame(gameName, authToken);
+            System.out.println("Created game: " + gameName + " gameID: " + result.gameID());
         } catch (ResponseException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void list() {
+        try {
+            var gameList = server.listGames(authToken);
+            gameMap.clear();
+            int index = 1;
+            for (var game : gameList.games()) {
+                gameMap.put(index, game.gameID());
+
+                String white = game.whiteUsername() != null ? game.whiteUsername() : "--";
+                String black = game.blackUsername() != null ? game.blackUsername() : "--";
+
+                System.out.println(index + ". " + game.gameName() + " | " + "White: " + white + " | " +
+                        "Black: " + black);
+                index++;
+            }
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void play(String[] user_inputs) {
+        try {
+            if (user_inputs.length != 3) {
+                System.out.println("Expected: join <ID> [WHITE|BLACK]");
+                return;
+            }
+            if (!user_inputs[2].toUpperCase().equals("WHITE") && !user_inputs[2].toUpperCase().equals("BLACK")) {
+                System.out.println("Game color must be WHITE or BLACK");
+                return;
+            }
+            int listNumber = Integer.parseInt(user_inputs[1]);
+            int gameID = gameMap.get(listNumber);
+            server.joinGame(user_inputs[2].toUpperCase(), gameID, authToken);
+            System.out.println("Joined game as " + user_inputs[2]);
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println("Please enter a valid game number.");
         }
     }
 
