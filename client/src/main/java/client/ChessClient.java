@@ -1,9 +1,6 @@
 package client;
-
-
-import model.GameList;
-import model.LoginResult;
-
+import chess.ChessBoard;
+import ui.BoardDrawer;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,7 +51,7 @@ public class ChessClient {
                     case "create" -> create(user_inputs);
                     case "list" -> list();
                     case "join" -> play(user_inputs);
-//                    case "observe"
+                    case "observe" -> observe(user_inputs);
                     case "logout" -> logout();
                     default -> System.out.println("Unknown command. Type 'help for options.'");
                 }
@@ -62,10 +59,6 @@ public class ChessClient {
             }
 
         }
-    }
-
-    private void printPrompt() {
-
     }
 
     private void register(String[] user_inputs) {
@@ -116,7 +109,7 @@ public class ChessClient {
             }
             String gameName = String.join(" ", Arrays.copyOfRange(user_inputs, 1, user_inputs.length));
             var result = server.createGame(gameName, authToken);
-            System.out.println("Created game: " + gameName + " gameID: " + result.gameID());
+            System.out.println("Created game: " + gameName);
         } catch (ResponseException e) {
             System.out.println(e.getMessage());
         }
@@ -142,6 +135,16 @@ public class ChessClient {
         }
     }
 
+    private void updateList() throws ResponseException {
+        var gameList = server.listGames(authToken);
+        gameMap.clear();
+        int index = 1;
+        for (var game : gameList.games()) {
+            gameMap.put(index, game.gameID());
+            index++;
+        }
+    }
+
     private void play(String[] user_inputs) {
         try {
             if (user_inputs.length != 3) {
@@ -152,6 +155,7 @@ public class ChessClient {
                 System.out.println("Game color must be WHITE or BLACK");
                 return;
             }
+            updateList();
             int listNumber = Integer.parseInt(user_inputs[1]);
             int gameID = gameMap.get(listNumber);
             server.joinGame(user_inputs[2].toUpperCase(), gameID, authToken);
@@ -159,7 +163,28 @@ public class ChessClient {
         } catch (ResponseException e) {
             System.out.println(e.getMessage());
         } catch (NumberFormatException | NullPointerException e) {
-            System.out.println("Please enter a valid game number.");
+            System.out.println("Please enter a valid game ID.");
+        }
+    }
+
+    private void observe(String[] user_inputs) {
+        try {
+            if (user_inputs.length != 2) {
+                System.out.println("Expected: observe <ID>");
+                return;
+            }
+            updateList();
+            int listNumber = Integer.parseInt(user_inputs[1]);
+            int gameID = gameMap.get(listNumber);
+            System.out.println("Observing game: " + user_inputs[1]);
+
+            ChessBoard board = new ChessBoard();
+            board.resetBoard();
+            BoardDrawer.drawBoard(board, true);
+        } catch (NumberFormatException | NullPointerException e) {
+            System.out.println("Please enter a valid game ID.");
+        } catch (ResponseException e) {
+            System.out.println(e.getMessage());
         }
     }
 
