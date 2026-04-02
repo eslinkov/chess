@@ -11,7 +11,8 @@ public class MoveHelper {
         return row >= 1 && row <= 8 && col >=1 && col <=8;
     }
 
-    public static Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor pieceColor, int[][] directions) {
+    public static Collection<ChessMove> calculateMoves(ChessBoard board, ChessPosition myPosition,
+                                                       ChessGame.TeamColor pieceColor, int[][] directions) {
         List<ChessMove> moves = new ArrayList<>();
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
