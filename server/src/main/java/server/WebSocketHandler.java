@@ -10,6 +10,7 @@ import dataaccess.GameDAO;
 import io.javalin.websocket.*;
 import model.AuthData;
 import model.GameData;
+import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import websocket.commands.*;
@@ -159,6 +160,30 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             connections.broadcast(gameID, null, msg);
         }
     }
+
+    private void leave(String username, UserGameCommand command) throws IOException, DataAccessException {
+        int gameID = command.getGameID();
+        GameData gameData = gameDAO.getGame(gameID);
+
+        ChessGame.TeamColor playerColor = getPlayerColor(username, gameData);
+        if (playerColor != null) {
+            String white = gameData.whiteUsername();
+            String black = gameData.blackUsername();
+            if (playerColor == ChessGame.TeamColor.WHITE) {
+                white = null;
+            } else {
+                black = null;
+            }
+            gameDAO.updateGame(new GameData(gameID, white, black, gameData.gameName(), gameData.game()));
+        }
+
+        connections.remove(gameID, username);
+
+        String notification = new Gson().toJson(new NotificationMessage(username + " left the game"));
+        connections.broadcast(gameID, username, notification);
+    }
+
+
 
 
 
