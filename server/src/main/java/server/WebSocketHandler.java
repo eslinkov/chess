@@ -10,14 +10,13 @@ import dataaccess.GameDAO;
 import io.javalin.websocket.*;
 import model.AuthData;
 import model.GameData;
-import org.eclipse.jetty.server.Authentication;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import websocket.commands.*;
 
-import java.io.IOException;
 
-import static javax.management.remote.JMXConnectorFactory.connect;
+import java.io.IOException;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -54,10 +53,26 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             }
 
             switch (command.getCommandType()) {
+                case CONNECT -> connect(username, session, command);
+                case MAKE_MOVE -> {
+                    MakeMoveCommand moveCommand = new Gson().fromJson(ctx.message(), MakeMoveCommand.class);
+                    makeMove(username, session, moveCommand);
+                }
+                case LEAVE -> leave(username, command);
+                case RESIGN -> resign(username, session, command);
 
             }
 
+        } catch (Exception e) {
+            try {
+                sendError(ctx.session, e.getMessage());
+            } catch (IOException ignored){
+            }
+
         }
+
+
+
     }
 
     private void connect(String username, Session session, UserGameCommand command) throws IOException,
@@ -183,9 +198,32 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.broadcast(gameID, username, notification);
     }
 
+    private void resign(String username, Session session, UserGameCommand command)
+            throws IOException, DataAccessException {
 
+        int gameID = command.getGameID();
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
 
+        if (game.getTeamTurn() == null) {
+            sendError(session, "Error: game is already over");
+            return;
+        }
 
+        ChessGame.TeamColor playerColor = getPlayerColor(username, gameData);
+        if (playerColor == null) {
+            sendError(session, "Error: observers cannot resign");
+            return;
+        }
+
+        game.setTeamTurn(null);
+        gameDAO.updateGame(new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(),
+                gameData.gameName(), game));
+
+        String notification = new Gson().toJson(new NotificationMessage(username + " resigned the game"));
+        connections.broadcast(gameID, null, notification);
+
+    }
 
     private String getUsername(String authToken) {
         try {
