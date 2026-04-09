@@ -11,7 +11,7 @@ import java.util.*;
 
 import static ui.EscapeSequences.*;
 
-public class ChessClient {
+public class ChessClient implements NotificationHandler {
     private final ServerFacade server;
     private final String serverUrl;
     private String authToken;
@@ -225,9 +225,12 @@ public class ChessClient {
             server.joinGame(userInputs[2].toUpperCase(), gameID, authToken);
             System.out.println(RESET_TEXT_COLOR + "Joined game as " + userInputs[2]);
 
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            BoardDrawer.drawBoard(board, !userInputs[2].equalsIgnoreCase("BLACK"));
+            whitePerspective = userInputs[2].equalsIgnoreCase("WHITE");
+            currentGameID = gameID;
+            ws = new WebSocketFacade(serverUrl, this);
+            ws.connect(authToken, gameID);
+            gameplayLoop();
+
         } catch (ResponseException e) {
             System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
         } catch (NumberFormatException | NullPointerException e) {
@@ -246,9 +249,12 @@ public class ChessClient {
             int gameID = gameMap.get(listNumber);
             System.out.println(RESET_TEXT_COLOR + "Observing game: " + userInputs[1]);
 
-            ChessBoard board = new ChessBoard();
-            board.resetBoard();
-            BoardDrawer.drawBoard(board, true);
+            whitePerspective = true;
+            currentGameID = gameID;
+            ws = new WebSocketFacade(serverUrl, this);
+            ws.connect(authToken, gameID);
+            gameplayLoop();
+
         } catch (NumberFormatException | NullPointerException e) {
             System.out.println(RESET_TEXT_COLOR + "Please enter a valid game ID.");
         } catch (ResponseException e) {
