@@ -1,7 +1,12 @@
 package client;
 import chess.ChessBoard;
 import chess.ChessGame;
+import com.google.gson.Gson;
 import ui.BoardDrawer;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,6 +17,7 @@ import static ui.EscapeSequences.*;
 
 public class ChessClient {
     private final ServerFacade server;
+    private final String serverUrl;
     private String authToken;
     private final Map<Integer, Integer> gameMap = new HashMap<>();
     private WebSocketFacade ws;
@@ -23,6 +29,7 @@ public class ChessClient {
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
+        this.serverUrl = serverUrl;
     }
 
     public void run() {
@@ -69,7 +76,35 @@ public class ChessClient {
         }
     }
 
+    @Override
+    public void notify(String message) {
+        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+        switch (serverMessage.getServerMessageType()) {
+            case LOAD_GAME -> {
+                LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+                currentGame = loadGame.getGame();
+                System.out.println();
+                BoardDrawer.drawBoard(currentGame.getBoard(), whitePerspective);
+                printPrompt();
+            }
+            case NOTIFICATION -> {
+                NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
+                System.out.println();
+                System.out.println(SET_TEXT_COLOR_YELLOW + notification.getMessage());
+                printPrompt();
+            }
+            case ERROR -> {
+                ErrorMessage error = new Gson().fromJson(message, ErrorMessage.class);
+                System.out.println();
+                System.out.println(SET_TEXT_COLOR_RED + error.getErrorMessage());
+                printPrompt();
+            }
+        }
+    }
 
+    private void printPrompt() {
+        System.out.print(RESET_TEXT_COLOR + "[IN_GAME] >>> ");
+    }
 
     private String help() {
         if (authToken == null) {
