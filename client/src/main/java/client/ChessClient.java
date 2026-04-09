@@ -1,6 +1,5 @@
 package client;
-import chess.ChessBoard;
-import chess.ChessGame;
+import chess.*;
 import com.google.gson.Gson;
 import ui.BoardDrawer;
 import websocket.messages.ErrorMessage;
@@ -309,6 +308,51 @@ public class ChessClient {
             System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
         }
     }
+
+    private void movePiece(String[] parts) {
+        try {
+            if (parts.length < 3) {
+                System.out.println(RESET_TEXT_COLOR + "Expected: move <FROM> <TO> [PROMOTION]");
+                return;
+            }
+            ChessPosition from = parsePosition(parts[1]);
+            ChessPosition to = parsePosition(parts[2]);
+            ChessPiece.PieceType promotion = null;
+            if (parts.length >= 4) {
+                promotion = parsePieceType(parts[3]);
+            }
+            ChessMove move = new ChessMove(from, to, promotion);
+            ws.makeMove(authToken, currentGameID, move);
+
+        } catch (Exception e) {
+            System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
+        }
+    }
+
+    private ChessPosition parsePosition(String input) {
+        if (input.length() != 2) {
+            throw new IllegalArgumentException("Invalid position: " + input);
+        }
+        int col = input.charAt(0) - 'a' + 1;
+        int row = input.charAt(1) - '0';
+        if (col < 1 || col > 8 || row < 1 || row > 8) {
+            throw new IllegalArgumentException("Invalid position: " + input);
+        }
+        return new ChessPosition(row, col);
+    }
+
+    private ChessPiece.PieceType parsePieceType(String input) {
+        return switch (input.toLowerCase()) {
+            case "queen" -> ChessPiece.PieceType.QUEEN;
+            case "rook" -> ChessPiece.PieceType.ROOK;
+            case "bishop" -> ChessPiece.PieceType.BISHOP;
+            case "knight" -> ChessPiece.PieceType.KNIGHT;
+            default -> throw new IllegalArgumentException("Invalid piece type: " + input);
+        };
+    }
+
+
+
 
 
 
