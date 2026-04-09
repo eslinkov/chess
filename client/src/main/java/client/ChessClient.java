@@ -259,4 +259,57 @@ public class ChessClient {
             System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
         }
     }
+
+    private void gameplayLoop() {
+        Scanner scanner = new Scanner(System.in);
+        inGame = true;
+        while (inGame) {
+            System.out.print(RESET_TEXT_COLOR + "[IN_GAME] >>> ");
+            String line = scanner.nextLine().trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            String[] parts = line.split("\\s+");
+            String command = parts[0].toLowerCase();
+
+            switch (command) {
+                case "help" -> System.out.print(SET_TEXT_COLOR_BLUE + gameplayHelp());
+                case "redraw" -> redrawBoard();
+                case "leave" -> leaveGame();
+                case "move" -> movePiece(parts);
+                case "resign" -> resignGame(scanner);
+                case "highlight" -> highlightMoves(parts);
+                default -> System.out.println(RESET_TEXT_COLOR + "Unknown command. Type 'help' for options.");
+            }
+        }
+    }
+
+    private String gameplayHelp() {
+        return """
+               redraw - redraw the chess board
+               leave - leave the current game
+               move <FROM> <TO> [PROMOTION] - make a move (e.g. move e2 e4)
+               resign - forfeit the game
+               highlight <POSITION> - show legal moves for a piece (e.g. highlight e2)
+               help - list possible commands
+               """;
+    }
+
+    private void redrawBoard() {
+        if (currentGame != null) {
+            BoardDrawer.drawBoard(currentGame.getBoard(), whitePerspective);
+        }
+    }
+
+    private void leaveGame() {
+        try {
+            ws.leave(authToken, currentGameID);
+            inGame = false;
+        } catch (ResponseException e) {
+            System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
+        }
+    }
+
+
+
 }
