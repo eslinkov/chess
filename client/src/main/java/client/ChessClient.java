@@ -7,10 +7,7 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 
@@ -363,6 +360,24 @@ public class ChessClient {
 
         } else {
             System.out.println(RESET_TEXT_COLOR + "Resign cancelled.");
+        }
+    }
+
+    private void highlightMoves(String[] parts) {
+        if (parts.length < 2) {
+            System.out.println(RESET_TEXT_COLOR + "Expected: highlight <POSITION>");
+            return;
+        }
+        try {
+            ChessPosition position = parsePosition(parts[1]);
+            Collection<ChessMove> validMoves = currentGame.validMoves(position);
+            if(validMoves == null || validMoves.isEmpty()) {
+                System.out.println(RESET_TEXT_COLOR + "No logal moves for that piece.");
+                return;
+            }
+            BoardDrawer.drawBoardWithHighlights(currentGame.getBoard(), whitePerspective, position, validMoves);
+        } catch (Exception e) {
+            System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
         }
 
     }
