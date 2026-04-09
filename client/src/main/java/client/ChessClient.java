@@ -351,7 +351,21 @@ public class ChessClient {
         };
     }
 
+    private void resignGame(Scanner scanner) {
+        System.out.print(RESET_TEXT_COLOR + "Are you sure you want to resign? (yes/no): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+        if (confirm.equals("yes")) {
+            try {
+                ws.resign(authToken, currentGameID);
+            } catch (ResponseException e) {
+                System.out.println(SET_TEXT_COLOR_RED + e.getMessage());
+            }
 
+        } else {
+            System.out.println(RESET_TEXT_COLOR + "Resign cancelled.");
+        }
+
+    }
 
 
 
