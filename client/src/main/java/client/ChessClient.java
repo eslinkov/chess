@@ -1,5 +1,6 @@
 package client;
 import chess.ChessBoard;
+import chess.ChessGame;
 import ui.BoardDrawer;
 
 import java.util.Arrays;
@@ -13,6 +14,11 @@ public class ChessClient {
     private final ServerFacade server;
     private String authToken;
     private final Map<Integer, Integer> gameMap = new HashMap<>();
+    private WebSocketFacade ws;
+    private ChessGame currentGame;
+    private boolean whitePerspective = true;
+    private int currentGameID;
+    private boolean inGame = false;
 
 
     public ChessClient(String serverUrl) {
@@ -62,6 +68,8 @@ public class ChessClient {
 
         }
     }
+
+
 
     private String help() {
         if (authToken == null) {
