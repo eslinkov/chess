@@ -43,15 +43,4 @@ public class ConnectionManager {
             connections.remove(closed);
         }
     }
-
-    public void sendToUser(int gameID, String username, String message) throws IOException {
-        var connections = gameConnections.get(gameID);
-        if (connections == null) {
-            return;
-        }
-        Session session = connections.get(username);
-        if (session != null && session.isOpen()) {
-            session.getRemote().sendString(message);
-        }
-    }
 }

@@ -3,6 +3,8 @@ package ui;
 import chess.*;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.BLACK_PAWN;
@@ -11,58 +13,20 @@ import static ui.EscapeSequences.BLACK_ROOK;
 public class BoardDrawer {
 
     public static void drawBoard(ChessBoard board, boolean whitePerspective) {
-
-        String[] columns;
-        if (whitePerspective) {
-            columns = new String[]{"a", "b", "c", "d", "e", "f", "g", "h"};
-        } else {
-            columns = new String[]{"h", "g", "f", "e", "d", "c", "b", "a"};
-        }
-
-        System.out.print(SET_BG_COLOR_DARK_GREY + EMPTY);
-        for (String col : columns) {
-            System.out.print(SET_BG_COLOR_DARK_GREY + col + "\u2003 ");
-        }
-        System.out.println("\u2003" + RESET_BG_COLOR);
-
-        for (int i = 0; i < 8; i++) {
-            int row = whitePerspective ? 8 - i : 1 + i;
-
-            System.out.print(SET_BG_COLOR_DARK_GREY + " " + row + " ");
-
-            for (int j = 0; j < 8; j++) {
-                int col = whitePerspective ? 1 + j : 8 - j;
-                if ((row + col) % 2 == 0) {
-                    System.out.print(SET_BG_COLOR_PINK);
-                } else {
-                    System.out.print(SET_BG_COLOR_WHITE);
-                }
-                ChessPiece piece = board.getPiece(new ChessPosition(row, col));
-                if (piece == null) {
-                    System.out.print(EMPTY);
-                } else {
-                    System.out.print(getPieceSymbol(piece));
-                }
-            }
-            System.out.print(SET_BG_COLOR_DARK_GREY + " " + row + " ");
-            System.out.println(RESET_BG_COLOR);
-        }
-
-        System.out.print(SET_BG_COLOR_DARK_GREY + EMPTY);
-        for (String col : columns) {
-            System.out.print(SET_BG_COLOR_DARK_GREY +  col + "\u2003 ");
-        }
-        System.out.println("\u2003" + RESET_BG_COLOR);
+        drawBoardHelper(board, whitePerspective, null, Set.of());
     }
 
     public static void drawBoardWithHighlights(ChessBoard board, boolean whitePerspective,
                                                ChessPosition selectedPosition, Collection<ChessMove> validMoves) {
-        java.util.Set<ChessPosition> endPositions = new java.util.HashSet<>();
+        Set<ChessPosition> endPositions = new HashSet<>();
         for (ChessMove move : validMoves) {
             endPositions.add(move.getEndPosition());
-
         }
+        drawBoardHelper(board, whitePerspective, selectedPosition, endPositions);
+    }
 
+    private static void drawBoardHelper(ChessBoard board, boolean whitePerspective,
+                                        ChessPosition selectedPosition, Set<ChessPosition> highlights) {
         String[] columns;
         if (whitePerspective) {
             columns = new String[]{"a", "b", "c", "d", "e", "f", "g", "h"};
@@ -85,9 +49,9 @@ public class BoardDrawer {
                 int col = whitePerspective ? 1 + j : 8 - j;
                 ChessPosition pos = new ChessPosition(row, col);
 
-                if (pos.equals(selectedPosition)) {
+                if (selectedPosition != null && pos.equals(selectedPosition)) {
                     System.out.print(SET_BG_COLOR_YELLOW);
-                } else if (endPositions.contains(pos)) {
+                } else if (highlights.contains(pos)) {
                     if ((row + col) % 2 == 0) {
                         System.out.print(SET_BG_COLOR_DARK_GREEN);
                     } else {
@@ -115,9 +79,7 @@ public class BoardDrawer {
             System.out.print(SET_BG_COLOR_DARK_GREY + col + "\u2003 ");
         }
         System.out.println("\u2003" + RESET_BG_COLOR);
-
     }
-
 
     private static String getPieceSymbol(ChessPiece piece) {
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
@@ -140,8 +102,6 @@ public class BoardDrawer {
             };
         }
     }
-
-
 }
 
 
