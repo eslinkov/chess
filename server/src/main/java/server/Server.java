@@ -57,6 +57,12 @@ public class Server {
         javalin.post("/game", this::handleCreateGame);
         javalin.put("/game", this::handleJoinGame);
         javalin.exception(DataAccessException.class, this::exceptionHandler);
+        WebSocketHandler webSocketHandler = new WebSocketHandler(authDAO, gameDAO);
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(webSocketHandler);
+            ws.onMessage(webSocketHandler);
+            ws.onClose(webSocketHandler);
+        });
     }
 
     private void exceptionHandler(DataAccessException e, Context context) {
