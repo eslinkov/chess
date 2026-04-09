@@ -113,7 +113,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
 
-        if (game.getTeamTurn() == null) {
+        if (game.isOver()) {
             sendError(session, "Error: game is over");
             return;
 
@@ -163,7 +163,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             String opponentName = getOpponentUsername(opponent, gameData);
             String msg = new Gson().toJson(new NotificationMessage(opponentName + " is in checkmate"));
             connections.broadcast(gameID, null, msg);
-            game.setTeamTurn(null);
+            game.setOver(true);
             gameDAO.updateGame(new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(),
                     gameData.gameName(), game));
         } else if (game.isInStalemate(opponent)) {
@@ -208,7 +208,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
 
-        if (game.getTeamTurn() == null) {
+        if (game.isOver()) {
             sendError(session, "Error: game is already over");
             return;
         }
@@ -219,7 +219,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             return;
         }
 
-        game.setTeamTurn(null);
+        game.setOver(true);
         gameDAO.updateGame(new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(),
                 gameData.gameName(), game));
 
